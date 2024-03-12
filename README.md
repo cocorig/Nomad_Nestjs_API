@@ -1,3 +1,28 @@
+# NestJS
+
+## 목차
+
+- Nest.js 소개
+
+  - [Nest.js란 무엇인가](#nestjs란-무엇인가)
+  - [설치/실행](#설치실행)
+  - [기본 폴더 구조](#기본-폴더구조)
+  - [Nest.js CLI](#nestjs-cli)
+
+- 기본 개념과 데코레이터
+
+  - [@Controller](#controller)
+  - [@Query, @Param, @Body](#query-param-body)
+  - [@Get, @Post, @Delete, @Patch](#get-post-delete-patch)
+  - [Services 만들기](#services-만들기)
+  - [NotFoundException](#notfoundexception)
+
+- 유효성 검사와 DTO
+
+  - [ValidationPipe](#validationpipe)
+  - [내장된 ValidationPipe 사용](#내장된-validationpipe-사용)
+  - [DTO](#dto)
+
 ## Reference
 
 해당 강의와 참고 자료를 바탕으로 정리한 내용입니다.
@@ -5,8 +30,14 @@
 - [노마드님의 NestJS 강의](https://nomadcoders.co/nestjs-fundamentals)
 - [NestJS 공식문서](https://docs.nestjs.com/)
 - [이랜서.BLOG](https://www.elancer.co.kr/blog/view?seq=197)
+- [Path Variable과 Query Parameter는 언제 사용해야 할까?](https://ryan-han.com/post/translated/pathvariable_queryparam/)
+- [SRP(Single Responsibility Principle)이란?](https://nesoy.github.io/articles/2017-12/SRP)
+- [exception-filters 공식문서](https://docs.nestjs.com/exception-filters)
+- [내장 파이프 공식문서](https://docs.nestjs.com/pipes)
+- [Validation 공식문서](https://docs.nestjs.com/techniques/validation)
+- [class-validator 예제 깃헙](https://github.com/typestack/class-validator)
 
-## Nest.js란 무엇인가
+# Nest.js란 무엇인가
 
 Node.js는 많은 사람들이 사용하는 서버 프레임워크이다. 지금도 가장 높은 정유율을 보유하고 있다. 하지만 Node.js는 정해진 아키텍처가 없기 때문에 개발자마다 다른 구조로 작성하는 문제가 있어, 협업이나 유지 보수에 어려움 있었다. 이러한 부분을 보완하기 위해 나온 것이 `NestJS`이다.
 `NestJS` 는 Node.js의 Express 위에서 구축된 프레임워크로, Express의 기능을 확장하여 보다 체계적이고 모듈화된 구조를 제공한다.또한 TypeScript를 지원하며, 순수 JavaScript로도 사용 가능하다. 정의된 아키텍처에 따라 개발해야 하며, 이렇게 개발된 프로젝트는 여러 개발자 간 협업하기 좋다. 이로 인해 대규모 프로젝트에서 많이 사용된다. 또한, 라이브러리 및 기능들이 기본적으로 포함되어 있다. (RESTful API 구축을 위한 HTTP 연결, DB 연동, 미들웨어 구축, 인증 및 보안)
@@ -14,9 +45,9 @@ Node.js는 많은 사람들이 사용하는 서버 프레임워크이다. 지금
 
  <br>
 
-## 설치/실행
+# 설치/실행
 
-### 시작하려면 Nest CLI를 설치해야 한다.
+## Nest.js CLI
 
 > Nest CLI란?
 > Nest 애플리케이션의 초기화, 개발 및 유지 관리를 도와주는 인터페이스 도구이다.
@@ -25,13 +56,13 @@ Node.js는 많은 사람들이 사용하는 서버 프레임워크이다. 지금
 npm i -g @nestjs/cli
 ```
 
-### 프로젝트 생성
+## 프로젝트 생성
 
 ```bash
 nest new project-name
 ```
 
-### 실행
+## 실행
 
 - 개발 환경에서 실행
 
@@ -55,7 +86,7 @@ npm i --save-dev @swc/cli @swc/core nest start -b swc
 
  <br>
 
-## 기본 폴더구조
+# 기본 폴더구조
 
  <br>
 
@@ -177,11 +208,11 @@ export class AppService {
 위의 코드에서 `@Injectable` 데코레이터 함수는 `AppService` 클래스가 NestJS 에서 의존성 주입이 가능한 서비스임을 나타낸다. getHello()는 실제로 실행되는 함수로, 리턴 값인 Hello World!는 클라이언트에게 반환되어 브라우저에 출력된다.
 즉, 비즈니스 로직이나 데이터 처리를 담당하는 서비스 클래스를 정의하고, 컨트롤러와 서비스를 분리함으로써 코드를 재사용할 수 있게된다.
 
-## Nest.js CLI
+# Nest.js CLI
 
 다음과 같이 터미널에서 nest를 실행하면 주요 명령어와 옵션을 확인할 수 있다.
 
-```basn
+```bash
 nest
 ```
 
@@ -196,6 +227,8 @@ nest generate|g [options] <schematic> [name] [path]
 - schematic : 생성할 요소의 유형을 나타낸다. (module, controller, service 등)
 - name : 생성할 요소의 이름을 나타낸다.
 - path : 생성된 요소의 경로를 나타낸다. (기본적으로 현재 디렉토리에 생성)
+
+<br>
 
 ### 예시
 
@@ -224,7 +257,9 @@ movies.controller.ts 파일로 이동 후 api route 작업을 해주자!
 
 ---
 
-### @Controller
+<br>
+
+# @Controller
 
 ```ts
 
@@ -235,7 +270,9 @@ import Controller
 - `@Controller`는 경로(prefix)를 받아서 해당 경로에 대한 요청을 처리할 수 있는 컨트롤러를 정의하는 데 사용한다.이 prefix의 값은 해당 컨트롤러에 대한 모든 라우트의 경로에 적용되므로 기본 경로라고 볼 수 있다. 따라서 위의 코드에서 기본 경로가 `/movie` 임을 나타낸다.
   `MoviesController`클래스는 @Controller 사용했기 때문에 해당 클래스는 주어진 경로에 해당하는 메서드(예제 코드에선 getAll,getOne,search)를 HTTP응답을 생성할 수 있다.
 
-### @Query
+# @Query, @Param, @Body
+
+## @Query
 
 ```ts
 (alias) Query(property: string, ...pipes: (PipeTransform<any, any> | Type<PipeTransform<any, any>>)[]): ParameterDecorator (+2 overloads)
@@ -246,7 +283,7 @@ import Query
   @Query의 매개변수인 `property`는 추출하고자 하는 쿼리의 이름을 나타낸다. 즉, HTTP 요청에서 해당 이름과 일치하는 쿼리 파라미터를 찾아 값을 추출한다.
   예를 들어, 예제 코드에서 year를 지정하면 HTTP 요청에서 `?year=2000`과 같은 형식의 쿼리 값을 추출한다. 이 추출된 값에 대해 결과를 반환하거나 변환 또는 유효성 검사를 실행하는 데 사용하는 것이 두 번째 매개변수인 `pipes`이다.
 
-### @Param
+## @Param
 
 ```ts
 (alias) Param(property: string, ...pipes: (PipeTransform<any, any> | Type<PipeTransform<any, any>>)[]): ParameterDecorator (+2 overloads)
@@ -262,6 +299,19 @@ import Param
 `@Param`은 요청 `주소에 포함되어 있는 값`을 받는다.
 (예. /movies/333)
 즉, 어떤 리소스를 식별하고 싶을 때 사용된다.
+
+## @Body
+
+```ts
+(alias) Body(): ParameterDecorator (+2 overloads)
+import Body
+```
+
+- `@Body`는 HTTP POST req의 body에서 데이터를 추출하여 movieData 매개변수에 할당한다.
+
+<br>
+
+# @Get, @Post, @Delete, @Patch
 
 ## @Post
 
@@ -281,15 +331,6 @@ import Post
 ```
 
 - `@Post`안에 경로(path)를 지정하지 않았으면 메서드가 속한 컨트롤러의 기본 경로로 사용되고,이 경로로 POST 요청을 보낸다.
-
-## @Body
-
-```ts
-(alias) Body(): ParameterDecorator (+2 overloads)
-import Body
-```
-
-- `@Body`는 HTTP POST req의 body에서 데이터를 추출하여 movieData 매개변수에 할당한다.
 
 ## @Delete
 
@@ -327,7 +368,7 @@ import Body
 
 <br>
 
-## Services 만들기
+# Services 만들기
 
 이번에도 터미널 창에 다음 명령어로 app.service.ts 파일을 생성하자.
 
@@ -341,20 +382,22 @@ app.module.ts를 보면 자동으로 providers에 Service가 생겼다!
 > SRP(Single Responsibility Principle)
 > 하나의 module, class 혹은 function이 하나의 동작만의 책임을 갖는다는 원칙이다.
 
-### 참고자료
+- [Path Variable과 Query Parameter는 언제 사용해야 할까?](https://ryan-han.com/post/translated/pathvariable_queryparam/)
+- [SRP(Single Responsibility Principle)이란?](https://nesoy.github.io/articles/2017-12/SRP)
 
-[Path Variable과 Query Parameter는 언제 사용해야 할까?](https://ryan-han.com/post/translated/pathvariable_queryparam/)
-[SRP(Single Responsibility Principle)이란?](https://nesoy.github.io/articles/2017-12/SRP)
+<br>
 
-## NotFoundException
+# NotFoundException
 
 NestJS 프레임워크에서 제공하는 예외 클래스 중 하나,리소스를 찾을 수 없을 때(알 수 없는 요청이 왔을 때) 클라이언트에게 알리기 위해 사용한다.
 
 [exception-filters 공식문서](https://docs.nestjs.com/exception-filters)
 
-# Validation
+# 유효성 검사와 DTO
 
-`To automatically validate incoming requests, Nest provides several pipes available right out-of-the-box`
+# ValidationPipe
+
+> `To automatically validate incoming requests, Nest provides several pipes available right out-of-the-box`
 
 - 자동으로 요청을 검증하기 위해 사용 가능한 여러 파이프를 제공한다.
 - NestJs에선 전송된 모든 데이터를 자동으로 검증하기 위한 여러 pipes가 존재한다.
@@ -367,7 +410,7 @@ NestJS 프레임워크에서 제공하는 예외 클래스 중 하나,리소스�
 
 이 중 `ValidationPipe`는 모든 클라이언트 페이로드에 대해 유효성 검사를 하고, class/DTO에 선언해 사용한다.
 
-## 내장된 ValidationPipe 사용
+# 내장된 ValidationPipe 사용
 
 내장된 ValidationPipe를 사용하기 위해 먼저 필요한 종속성을 설치하자.
 
@@ -384,12 +427,14 @@ npm i --save class-validator class-transformer
 
   - transform : 우리가 원하는 타입으로 자동으로 변환해주는 옵션이다.
 
-[내장 파이프 공식문서](https://docs.nestjs.com/pipes)
-[Validation 공식문서](https://docs.nestjs.com/techniques/validation)
+- [내장 파이프 공식문서](https://docs.nestjs.com/pipes)
+- [Validation 공식문서](https://docs.nestjs.com/techniques/validation)
 
-## DTO(Data Transfer Object)
+<br>
 
-- DTO 클래스는 데이터 전송을 위한 객체로, 주로 `컨트롤러와 서비스 간에 데이터를 주고받을 때` DTO를 사용한다.(ex. req.body의 타입을 지정)
+# DTO
+
+- DTO (Data Transfer Object)클래스는 데이터 전송을 위한 객체로, 주로 `컨트롤러와 서비스 간에 데이터를 주고받을 때` DTO를 사용한다.(ex. req.body의 타입을 지정)
   class-validator 라이브러리에 많은 옵션이 있는데 [class-validator 예제 깃헙](https://github.com/typestack/class-validator) 여기 잘 정리되어 있다.
 
 ```ts
