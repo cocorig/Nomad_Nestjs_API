@@ -3,7 +3,9 @@ import { Movie } from './entities/movie.entity';
 import { NotFoundException } from '@nestjs/common';
 import { CreateMovieDto } from './dto/create-movie-dto';
 import { UpdateMovieDto } from './dto/update-movie-dto';
-@Injectable() // Provider
+// Providers can be injected into other classes via 'constructor parameter injection using Nest's built-in Dependency Injection (DI) system.'
+//https://docs.nestjs.com/providers#dependency-injection
+@Injectable()
 export class MoviesService {
   private movies: Movie[] = [];
 

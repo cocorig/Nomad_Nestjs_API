@@ -17,6 +17,7 @@ import { UpdateMovieDto } from './dto/update-movie-dto';
 // movies
 @Controller('movies') // 기본 엔드포인터
 export class MoviesController {
+  //MoviesService
   constructor(private readonly moviesService: MoviesService) {} // Provider을 컨트롤러 클래스에 주입
 
   // 전체 영화 배열 가져오기

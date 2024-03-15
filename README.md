@@ -474,6 +474,34 @@ export class UpdateMovieDto extends PartialType(CreateMovieDto) {}
 // https://docs.nestjs.com/openapi/mapped-types
 ```
 
-
-
 [맨 위로 이동](#readme)
+
+## [Testing](https://docs.nestjs.com/fundamentals/testing)
+
+movies.controller.ts라는 파일을 테스팅하고 싶다면 app.controller.spec.ts파일이 있어야 하는 것처럼 NestJs에서는 기본 규칙이다. 또한 jest는 보통 .spec.ts로 끝나는 파일들을 테스트 대상으로 인식하고 실행 수 있도록 설정되어 있다.
+따라서 새로운 테스트 파일을 추가하면 Jest가 자동으로 해당 파일을 찾아 실행한다.
+
+```json
+  "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
+```
+
+- `test:watch`:파일이 변경될 때마다 자동으로 테스트를 다시 실행한다.
+- `test:cov` : jest가 프로젝트의 코드 커버리지를 계산하고 보고서를 생성한다.이를 통해 어떤 부분이 테스트되지 않았는지를 파악할 수 있다.
+- `test:debug` : Jest를 디버깅 모드로 테스트
+- `test:e2e` : 전체 시스템을 테스트하는 것으로, 주로 페이지로 가면 특정 페이지가 나와야하는 경우 사용(사용자가 취할만한 액션들을 처음부터 끝까지 테스트)
+
+## Unit Testing
+
+function 같은 하나의 유닛만을 테스트할 때 사용한다.또한, 코드의 각 부분이 예상대로 작동하는지 확인한다.
+유닛 테스팅을 사용해서 MoviesService를 테스트해보자.
+
+- Jest에서 제공하는 각 훅
+
+  - beforeEach(fn, timeout)
+  - beforeAll(fn, timeout)
+  - afterEach(fn, timeout)
+  - afterAll(fn, timeout)
