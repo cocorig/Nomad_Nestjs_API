@@ -23,6 +23,9 @@
   - [내장된 ValidationPipe 사용](#내장된-validationpipe-사용)
   - [DTO](#dto)
 
+- 테스트
+  - [Testing](#testing)
+
 ## Reference
 
 해당 강의와 참고 자료를 바탕으로 정리한 내용입니다.
@@ -36,6 +39,7 @@
 - [내장 파이프 공식문서](https://docs.nestjs.com/pipes)
 - [Validation 공식문서](https://docs.nestjs.com/techniques/validation)
 - [class-validator 예제 깃헙](https://github.com/typestack/class-validator)
+- [Testing](https://docs.nestjs.com/fundamentals/testing)
 
 # Nest.js란 무엇인가
 
@@ -474,11 +478,16 @@ export class UpdateMovieDto extends PartialType(CreateMovieDto) {}
 // https://docs.nestjs.com/openapi/mapped-types
 ```
 
-[맨 위로 이동](#readme)
+## Testing
 
-## [Testing](https://docs.nestjs.com/fundamentals/testing)
+- 설치
 
-movies.controller.ts라는 파일을 테스팅하고 싶다면 app.controller.spec.ts파일이 있어야 하는 것처럼 NestJs에서는 기본 규칙이다. 또한 jest는 보통 .spec.ts로 끝나는 파일들을 테스트 대상으로 인식하고 실행 수 있도록 설정되어 있다.
+```bash
+npm i --save-dev @nestjs/testing
+
+```
+
+movies.controller.ts라는 파일을 테스팅하고 싶다면 app.controller.spec.ts파일이 있어야 하는 것처럼 NestJs에서는 기본 규칙이다. 또한 jest는 보통 .spec.ts로 끝나는 파일들을 테스트 대상으로 인식하고 실행 수 있도록 설정되어 있다. <br>
 따라서 새로운 테스트 파일을 추가하면 Jest가 자동으로 해당 파일을 찾아 실행한다.
 
 ```json
@@ -496,7 +505,7 @@ movies.controller.ts라는 파일을 테스팅하고 싶다면 app.controller.sp
 
 ## Unit Testing
 
-function 같은 하나의 유닛만을 테스트할 때 사용한다.또한, 코드의 각 부분이 예상대로 작동하는지 확인한다.
+function 같은 하나의 유닛만을 테스트할 때 사용한다.또한, 코드의 각 부분이 예상대로 작동하는지 확인한다. <br>
 유닛 테스팅을 사용해서 MoviesService를 테스트해보자.
 
 - Jest에서 제공하는 각 훅
@@ -505,3 +514,78 @@ function 같은 하나의 유닛만을 테스트할 때 사용한다.또한, 코
   - beforeAll(fn, timeout)
   - afterEach(fn, timeout)
   - afterAll(fn, timeout)
+
+- describe(): 여러개의 it()을 하나의 Test 작업단위로 묶어주는 API이다.,하나의 작은 TestCase를 it()라고 한다면 describe()는 여러개의 TestCase를 하나의 그룹으로 묶어주는 역할을 한다.
+
+- beforeEach() : TestCase의 각 코드가 실행되기 전에 수행되어야 하는 로직을 넣는 API이다.반복되는 Logic을 넣을 때 사용된다.(테스트에 필요한 객체를 생성)
+
+```ts
+// 테스트하기 전에 실행
+beforeEach(async () => {
+  const module: TestingModule = await Test.createTestingModule({
+    providers: [MoviesService],
+  }).compile();
+
+  service = module.get<MoviesService>(MoviesService);
+});
+```
+
+- expect(): 테스트에서 예상되는 결과를 지정해 테스트를 수행한다.
+
+```ts
+  // getOne 메서드가 올바른 영화 객체를 반환하는지 확인하는 테스트
+  describe('getOne', () => {
+    it('should return an movie', () => {
+      service.create({
+        // 테스트를 위해 가짜 데이터 생성
+        title: 'Test Movie',
+        genres: ['Movie'],
+        year: 2000,
+      });
+      const movie = service.getOne(1);
+      expect(movie).toBeDefined(); // getOne 메서드가 유효한 값을 반환했는지를 검증
+      expect(movie.id).toEqual(1);
+    });
+```
+
+- toEqual(): 두 값이 서로 동일한지 확인한다.
+- toBeDefined():null과 undefined를 제외한 모든 값에 대해 true를 반환하고,값이 정의되었는지 확인한다.
+- toBeInstanceOf():값이 특정 클래스의 인스턴스인지 확인한다.
+
+```ts
+describe('getAll', () => {
+  it('should return an array', () => {
+    const result = service.getAll(); //  MoviesService의 getAll()의 결과가 배열 인스턴스인지 테스트
+    expect(result).toBeInstanceOf(Array);
+  });
+});
+```
+
+```ts
+describe('create', () => {
+  it('should create a movie', () => {
+    const beforeCreate = service.getAll().length;
+    service.create({
+      // movie 생성
+      title: 'Test Movie',
+      genres: ['Movie'],
+      year: 2000,
+    });
+    const afterCreate = service.getAll().length;
+    console.log(beforeCreate, afterCreate);
+    expect(afterCreate).toBeGreaterThan(beforeCreate);
+  });
+});
+```
+
+- toBeGreaterThan(): 값이 주어진 다른 값보다 큰지 확인한다. 주어진 값이 다른 값보다 크면 true,작으면 false반환
+
+- toBeLessThan();값이 주어진 다른 값보다 작은지 확인한다.
+
+```ts
+expect(afterDelete).toBeLessThan(beforeDeletes);
+```
+
+## E2E Testing
+
+[맨 위로 이동](#readme)
