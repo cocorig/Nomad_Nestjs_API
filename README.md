@@ -25,6 +25,7 @@
 
 - 테스트
   - [Testing](#testing)
+  - [HTTP 상태 코드](https://developer.mozilla.org/ko/docs/Web/HTTP/Status)
 
 ## Reference
 
@@ -478,7 +479,7 @@ export class UpdateMovieDto extends PartialType(CreateMovieDto) {}
 // https://docs.nestjs.com/openapi/mapped-types
 ```
 
-## Testing
+# Testing
 
 - 설치
 
@@ -510,10 +511,10 @@ function 같은 하나의 유닛만을 테스트할 때 사용한다.또한, 코
 
 - Jest에서 제공하는 각 훅
 
-  - beforeEach(fn, timeout)
-  - beforeAll(fn, timeout)
-  - afterEach(fn, timeout)
-  - afterAll(fn, timeout)
+  - beforeEach(fn, timeout): 각각의 테스트 케이스가 실행되기 전에 실행한다.(데이터베이스 연결을 설정,테스트에 필요한 작업)
+  - beforeAll(fn, timeout) : 모든 테스트 케이스가 실행되기 전에 한 번 실행한다.(테스트 환경의 전체 설정을 초기화)
+  - afterEach(fn, timeout) : 각각의 테스트 케이스가 실행된 후에 실행한다. (clean-up 작업,, 데이터베이스 연결을 종료)
+  - afterAll(fn, timeout) : 모든 테스트 케이스가 실행된 후에 한 번 실행한다.
 
 - describe(): 여러개의 it()을 하나의 Test 작업단위로 묶어주는 API이다.,하나의 작은 TestCase를 it()라고 한다면 describe()는 여러개의 TestCase를 하나의 그룹으로 묶어주는 역할을 한다.
 
@@ -587,5 +588,13 @@ expect(afterDelete).toBeLessThan(beforeDeletes);
 ```
 
 ## E2E Testing
+
+https://docs.nestjs.com/fundamentals/testing#end-to-end-testing
+
+개별 모듈 및 클래스에 초점을 맞추는 단위 테스트와 달리, e2e 테스트는 보다 종합적인 수준에서 클래스와 모듈의 상호 작용을 다룬다.
+또한 Nest를 사용하면 Supertest 라이브러리를 사용하여 HTTP 요청을 쉽게 시뮬레이션할 수 있다.
+
+`request()` 함수를 사용하여 Nest 앱에서 실행 중인 HTTP 서버에 대한 테스트 요청을 시뮬레이션한다. 이를 위해 request() 함수에 Nest 앱의 HTTP 서버를 가리키는 참조(`app.getHttpServer()`)를 전달한다. 이렇게 하면 Supertest가 Nest 앱으로 요청을 보낼 수 있게 된다.
+그 후에는 `request().get('/cats')`와 같이 사용하여 실제 HTTP 요청과 유사한 요청을 보낼 수 있다. 따라서 `request(app.getHttpServer()).get('/cats')`는 네트워크를 통해 `/cats`로 들어오는 실제 HTTP 요청과 동일한 요청을 Nest 앱으로 보내게 된다.
 
 [맨 위로 이동](#readme)

@@ -17,6 +17,7 @@ export class MoviesService {
     const movie = this.movies.find((movie) => movie.id === id);
     //반환되는 값이 없으면 undefined 출력
     if (!movie) {
+      console.log('Movie ID가 ${id}인 영화를 찾을 수 없습니다.');
       // NotFoundException :오류 처리 NestJS 프레임워크에서 제공하는 예외 클래스 중 하나,리소스를 찾을 수 없을 때(알 수 없는 요청이 왔을 때) 클라이언트에게 알리기 위해 사용한다.
       throw new NotFoundException(
         `Movie ID가 ${id}인 영화를 찾을 수 없습니다.`,
@@ -30,6 +31,7 @@ export class MoviesService {
     const moviesForYear: Movie[] = this.movies.filter(
       (movie) => movie.year === year,
     );
+    console.log(moviesForYear);
     if (!moviesForYear.length) {
       throw new NotFoundException(
         `${year}년에 해당하는 영화를 찾을 수 없습니다.`,
